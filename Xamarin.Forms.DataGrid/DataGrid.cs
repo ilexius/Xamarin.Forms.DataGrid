@@ -12,6 +12,9 @@ namespace Xamarin.Forms.DataGrid
     public class DataGrid : Grid
     {
         #region binding properties
+        public static readonly BindableProperty IsHeaderVisibleProperty =
+            BindableProperty.Create(nameof(IsHeaderVisible), typeof(bool), typeof(DataGrid), true);
+
         public static readonly BindableProperty HeaderBackgroundProperty =
             BindableProperty.Create(nameof(HeaderBackground), typeof(Color), typeof(DataGrid), Color.Aqua);
 
@@ -21,6 +24,9 @@ namespace Xamarin.Forms.DataGrid
         public static readonly BindableProperty BorderColorProperty =
             BindableProperty.Create(nameof(BorderColor), typeof(Color), typeof(DataGrid), Color.Black,
                 propertyChanged: (b, o, n) => { (b as DataGrid)._listView.SeparatorColor = (Color)n; });
+
+        public static readonly BindableProperty BorderWidthColumnsProperty =
+            BindableProperty.Create(nameof(BorderWidthColumns), typeof(int), typeof(DataGrid), 1);
 
         public static readonly BindableProperty RowsBackgroundColorPaletteProperty =
             BindableProperty.Create(nameof(RowsBackgroundColorPalette), typeof(PaletteCollection), typeof(DataGrid), new PaletteCollection { Color.White });
@@ -67,6 +73,12 @@ namespace Xamarin.Forms.DataGrid
         #endregion
 
         #region properties
+        public bool IsHeaderVisible
+        {
+            get { return (bool)GetValue(IsHeaderVisibleProperty); }
+            set { SetValue(IsHeaderVisibleProperty, value); }
+        }
+
         public Color HeaderBackground
         {
             get { return (Color)GetValue(HeaderBackgroundProperty); }
@@ -77,6 +89,12 @@ namespace Xamarin.Forms.DataGrid
         {
             get { return (Color)GetValue(HeaderTextColorProperty); }
             set { SetValue(HeaderTextColorProperty, value); }
+        }
+
+        public int BorderWidthColumns
+        {
+            get { return (int)GetValue(BorderWidthColumnsProperty); }
+            set { SetValue(BorderWidthColumnsProperty, value); }
         }
 
         public Color BorderColor
@@ -198,7 +216,7 @@ namespace Xamarin.Forms.DataGrid
         {
             RowDefinitions.Clear();
 
-            RowDefinitions.Add(new RowDefinition() { Height = new GridLength(HeaderHeight, GridUnitType.Absolute) });
+            RowDefinitions.Add(new RowDefinition() { Height = new GridLength(IsHeaderVisible ? HeaderHeight: 0, GridUnitType.Absolute) });
             RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
 
             _headerView = GetHeader();
@@ -262,11 +280,12 @@ namespace Xamarin.Forms.DataGrid
         {
             var header = new Grid
             {
+                IsVisible = IsHeaderVisible,
                 HeightRequest = HeaderHeight,
                 Padding = 1,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 RowSpacing = 0,
-                ColumnSpacing = 1,
+                ColumnSpacing = BorderWidthColumns,
                 BackgroundColor = BorderColor,
             };
 

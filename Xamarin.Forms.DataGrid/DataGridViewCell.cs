@@ -67,7 +67,7 @@ namespace Xamarin.Forms.DataGrid
             {
                 BackgroundColor = DataGrid.BorderColor,
                 RowSpacing = 0,
-                ColumnSpacing = 1,
+                ColumnSpacing = DataGrid.BorderWidthColumns,
                 Padding = new Thickness(1, 0, 1, 1),
             };
 
